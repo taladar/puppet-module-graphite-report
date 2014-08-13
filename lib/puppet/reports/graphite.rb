@@ -34,8 +34,9 @@ Puppet::Reports.register_report(:graphite) do
     Puppet.debug "Sending data for #{self.host} to graphite server at #{HOST}:#{PORT}"
     timestamp = self.time.to_i
     with_graphite(HOST, PORT) { |graphite|
+      reporthost = self.host.gsub(/[^a-zA-Z0-9-]/, "_")
       self.metrics.each { |metric, data|
-        path = [PREFIX, metric]
+        path = [PREFIX, reporthost, metric]
         data.values.each { |name, _, value|
           path << name
           debug = [path.join('.'), value, timestamp].join(' ')
